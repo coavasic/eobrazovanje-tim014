@@ -1,6 +1,7 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity(name = "predmet")
 public class Predmet {
@@ -10,6 +11,7 @@ public class Predmet {
     @Column(name = "predmet_id")
     private Integer predmetId;
 
+    @NotBlank(message = "Morate uneti naziv predmea")
     @Column(nullable = false)
     private String naziv;
 
@@ -21,6 +23,10 @@ public class Predmet {
 
     }
 
+    public Predmet(String naziv, String opis) {
+        this.naziv = naziv;
+        this.opis = opis;
+    }
 
     public Integer getPredmetId() {
         return predmetId;
@@ -44,5 +50,14 @@ public class Predmet {
 
     public void setOpis(String opis) {
         this.opis = opis;
+    }
+
+    @Override
+    public String toString() {
+        return "Predmet{" +
+                "predmetId=" + predmetId +
+                ", naziv='" + naziv + '\'' +
+                ", opis='" + opis + '\'' +
+                '}';
     }
 }

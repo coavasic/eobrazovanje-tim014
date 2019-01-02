@@ -1,4 +1,6 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -16,8 +18,12 @@ public class Dokument {
     @Column(nullable = false,name = "tip_dokumenta")
     private String tipDokumenta;
 
+    @Column(nullable = false,name = "download_uri")
+    private String downloadUri;
+
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "student_id",referencedColumnName = "student_id",nullable = false)
+    @JoinColumn(name = "jmbg",referencedColumnName = "jmbg",nullable = true)
     private Student student;
 
 
@@ -55,5 +61,24 @@ public class Dokument {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public String getDownloadUri() {
+        return downloadUri;
+    }
+
+    public void setDownloadUri(String downloadUri) {
+        this.downloadUri = downloadUri;
+    }
+
+    @Override
+    public String toString() {
+        return "Dokument{" +
+                "dokumentId=" + dokumentId +
+                ", naziv='" + naziv + '\'' +
+                ", tipDokumenta='" + tipDokumenta + '\'' +
+                ", downloadUri= '" + downloadUri +'\''+
+                ", student=" + student +
+                '}';
     }
 }

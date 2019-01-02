@@ -1,4 +1,4 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 import javax.persistence.*;
 
@@ -12,7 +12,7 @@ public class Pohadja {
 
 
     @ManyToOne
-    @JoinColumn(name = "student_id",referencedColumnName = "student_id",nullable = false)
+    @JoinColumn(name = "jmbg",referencedColumnName = "jmbg",nullable = false)
     private Student student;
 
     @ManyToOne
@@ -44,4 +44,6 @@ public class Pohadja {
     public void setPredmet(Predmet predmet) {
         this.predmet = predmet;
     }
+
+
 }

@@ -1,14 +1,20 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "korisnik")
 public abstract class Korisnik {
 
+    @Id
     @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long jmbg;
+
+    @Column(name="tipkorisnika")
+    private String tipkorisnika;
 
     @Column(name = "korisnicko_ime")
     private String korisnickoIme;
@@ -42,8 +48,9 @@ public abstract class Korisnik {
 
     }
 
-    public Korisnik(Long jmbg, String korisnickoIme, String lozinka, String ime, String prezime, String brojTelefona, String email, String ulicaBroj, Integer postanskiBroj, String mesto) {
+    public Korisnik(Long jmbg, String tip, String korisnickoIme, String lozinka, String ime, String prezime, String brojTelefona, String email, String ulicaBroj, Integer postanskiBroj, String mesto) {
         this.jmbg = jmbg;
+        this.tipkorisnika = tip;
         this.korisnickoIme = korisnickoIme;
         this.lozinka = lozinka;
         this.ime = ime;
@@ -53,6 +60,10 @@ public abstract class Korisnik {
         this.ulicaBroj = ulicaBroj;
         this.postanskiBroj = postanskiBroj;
         this.mesto = mesto;
+    }
+
+    public Korisnik(String tip){
+        this.tipkorisnika = tip;
     }
 
     public Long getJmbg() {
@@ -133,5 +144,30 @@ public abstract class Korisnik {
 
     public void setMesto(String mesto) {
         this.mesto = mesto;
+    }
+
+    public String getTipkorisnika() {
+        return tipkorisnika;
+    }
+
+    public void setTipkorisnika(String tipkorisnika) {
+        this.tipkorisnika = tipkorisnika;
+    }
+
+    @Override
+    public String toString() {
+        return "Korisnik{" +
+                "jmbg=" + jmbg +
+                ", tipkorisnika='" + tipkorisnika + '\'' +
+                ", korisnickoIme='" + korisnickoIme + '\'' +
+                ", lozinka='" + lozinka + '\'' +
+                ", ime='" + ime + '\'' +
+                ", prezime='" + prezime + '\'' +
+                ", brojTelefona='" + brojTelefona + '\'' +
+                ", email='" + email + '\'' +
+                ", ulicaBroj='" + ulicaBroj + '\'' +
+                ", postanskiBroj=" + postanskiBroj +
+                ", mesto='" + mesto + '\'' +
+                '}';
     }
 }

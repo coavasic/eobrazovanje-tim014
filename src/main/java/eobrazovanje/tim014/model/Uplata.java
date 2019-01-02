@@ -1,7 +1,10 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
+
+import eobrazovanje.tim014.model.Student;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.Date;
 
 @Entity(name = "uplata")
@@ -18,11 +21,12 @@ public class Uplata {
     @Column(name = "svrha_uplate",nullable = false)
     private String svrhaUplate;
 
+    @Min(value = 1,message = "Iznos mora biti vezi od 0")
     @Column(nullable = false)
     private Float iznos;
 
     @ManyToOne
-    @JoinColumn(name = "student_id",referencedColumnName = "student_id",nullable = false)
+    @JoinColumn(name = "jmbg",referencedColumnName = "jmbg",nullable = false)
     private Student student;
 
 

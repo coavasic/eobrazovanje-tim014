@@ -1,4 +1,4 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,7 +12,7 @@ public class Obaveza  {
     private Integer obavezaId;
 
     @ManyToOne
-    @JoinColumn(name = "student_id",referencedColumnName = "student_id",nullable = false)
+    @JoinColumn(name = "jmbg",referencedColumnName = "jmbg",nullable = false)
     private Student student;
 
     @ManyToOne
@@ -75,5 +75,17 @@ public class Obaveza  {
 
     public void setTipObaveze(String tipObaveze) {
         this.tipObaveze = tipObaveze;
+    }
+
+    @Override
+    public String toString() {
+        return "Obaveza{" +
+                "obavezaId=" + obavezaId +
+                ", student=" + student +
+                ", predmet=" + predmet +
+                ", datumObaveze=" + datumObaveze +
+                ", polozen=" + polozen +
+                ", tipObaveze='" + tipObaveze + '\'' +
+                '}';
     }
 }

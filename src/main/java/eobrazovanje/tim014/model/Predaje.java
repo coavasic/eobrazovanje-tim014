@@ -1,4 +1,4 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 import javax.persistence.*;
 
@@ -11,7 +11,7 @@ public class Predaje {
     private Integer predajeId;
 
     @ManyToOne
-    @JoinColumn(name = "nastavnik_id",referencedColumnName = "nastavnik_id",nullable = false)
+    @JoinColumn(name = "jmbg",referencedColumnName = "jmbg",nullable = false)
     private Nastavnik nastavnik;
 
     @ManyToOne

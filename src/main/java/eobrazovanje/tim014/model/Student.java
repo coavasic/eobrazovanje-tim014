@@ -1,18 +1,16 @@
-package eobrazovanje.tim014.Model;
+package eobrazovanje.tim014.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "student")
+@DiscriminatorValue("student")
 public class Student extends Korisnik {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "student_id")
-    private Integer studentId;
 
-    @Column(name = "broj_indeksa",nullable = false,unique = true)
+
+    @Column(name = "broj_indeksa",unique = true)
     private String brojIndeksa;
 
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
@@ -28,22 +26,14 @@ public class Student extends Korisnik {
 
 
     public Student(){
-        super();
+        super("student");
     }
 
-    public Student(Long jmbg, String korisnickoIme, String lozinka, String ime, String prezime, String brojTelefona, String email, String ulicaBroj, Integer postanskiBroj, String mesto, Integer studentId,String brojIndeksa) {
-        super(jmbg, korisnickoIme, lozinka, ime, prezime, brojTelefona, email, ulicaBroj, postanskiBroj, mesto);
-        this.studentId = studentId;
+    public Student(Long jmbg, String korisnickoIme, String lozinka, String ime, String prezime, String brojTelefona, String email, String ulicaBroj, Integer postanskiBroj, String mesto,String brojIndeksa) {
+        super(jmbg,"nastavnik", korisnickoIme, lozinka, ime, prezime, brojTelefona, email, ulicaBroj, postanskiBroj, mesto);
         this.brojIndeksa = brojIndeksa;
     }
 
-    public Integer getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
-    }
 
     public List<Dokument> getDokumenti() {
         return dokumenti;
@@ -75,5 +65,15 @@ public class Student extends Korisnik {
 
     public void setBrojIndeksa(String brojIndeksa) {
         this.brojIndeksa = brojIndeksa;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "brojIndeksa='" + brojIndeksa + '\'' +
+                ", dokumenti=" + dokumenti +
+                ", pohadjanja=" + pohadjanja +
+                ", obaveze=" + obaveze +
+                "} " + super.toString();
     }
 }
