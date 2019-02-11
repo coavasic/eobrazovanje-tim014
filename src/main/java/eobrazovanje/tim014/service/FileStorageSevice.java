@@ -36,6 +36,9 @@ public class FileStorageSevice {
             if(fileName.contains("..")){
                 throw new FileStorageException("Invalid filename "  + fileName);
             }
+            if(checkIfFileExist(username + "/" + file.getOriginalFilename())){
+                throw new FileStorageException("File already exist! " + fileName);
+            }
             Path pathWithUsername = Paths.get(this.fileStorageLocation.toString(),username);
             Files.createDirectories(pathWithUsername);
             Path targetLocation = pathWithUsername.resolve(fileName);
@@ -64,7 +67,7 @@ public class FileStorageSevice {
     }
 
     public boolean checkIfFileExist(String fileName){
-
+        System.out.println(fileName);
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             System.out.println(filePath.toString());
         Resource resource = null;

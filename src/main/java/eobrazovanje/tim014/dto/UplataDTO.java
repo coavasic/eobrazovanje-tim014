@@ -11,6 +11,7 @@ public class UplataDTO {
     private String svrhaUplate;
     private Float iznos;
     private String brojIndeksa;
+    private String imePrezime;
 
 
     public UplataDTO(){}
@@ -21,6 +22,7 @@ public class UplataDTO {
         this.svrhaUplate = uplata.getSvrhaUplate();
         this.iznos = uplata.getIznos();
         this.brojIndeksa = uplata.getStudent().getBrojIndeksa();
+        this.imePrezime = uplata.getStudent().getIme() + " " + uplata.getStudent().getPrezime();
     }
 
     public Integer getId() {
@@ -61,5 +63,13 @@ public class UplataDTO {
 
     public void setBrojIndeksa(String brojIndeksa) {
         this.brojIndeksa = brojIndeksa;
+    }
+
+    public String getImePrezime() {
+        return imePrezime;
+    }
+
+    public void setImePrezime(String imePrezime) {
+        this.imePrezime = imePrezime;
     }
 }

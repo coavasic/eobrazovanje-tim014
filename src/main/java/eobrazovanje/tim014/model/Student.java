@@ -1,5 +1,7 @@
 package eobrazovanje.tim014.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +12,18 @@ public class Student extends Korisnik {
 
 
 
-    @Column(name = "broj_indeksa",unique = true)
+    @Column(name = "broj_indeksab",unique = true)
     private String brojIndeksa;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     private List<Dokument> dokumenti = new ArrayList<Dokument>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     private List<Pohadja> pohadjanja = new ArrayList<Pohadja>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     private List<Obaveza> obaveze = new ArrayList<Obaveza>();
 

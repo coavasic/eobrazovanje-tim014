@@ -22,7 +22,6 @@ public class Uplata {
     private String svrhaUplate;
 
     @Min(value = 1,message = "Iznos mora biti vezi od 0")
-    @Column(nullable = false)
     private Float iznos;
 
     @ManyToOne
@@ -73,4 +72,5 @@ public class Uplata {
     public void setStudent(Student student) {
         this.student = student;
     }
+
 }

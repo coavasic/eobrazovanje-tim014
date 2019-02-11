@@ -9,6 +9,7 @@ public class DokumentDTO {
     private String tipDokumenta;
     private String downloadUri;
     private String brojIndeksa;
+    private String imePrezime;
 
     public DokumentDTO(Dokument dokument){
         this.id = dokument.getDokumentId();
@@ -16,6 +17,7 @@ public class DokumentDTO {
         this.tipDokumenta = dokument.getTipDokumenta();
         this.downloadUri = dokument.getDownloadUri();
         this.brojIndeksa = dokument.getStudent().getBrojIndeksa();
+        this.imePrezime = dokument.getStudent().getIme() + " " + dokument.getStudent().getPrezime();
     }
 
     public DokumentDTO(){}
@@ -58,5 +60,24 @@ public class DokumentDTO {
 
     public void setBrojIndeksa(String brojIndeksa) {
         this.brojIndeksa = brojIndeksa;
+    }
+
+    public String getImePrezime() {
+        return imePrezime;
+    }
+
+    public void setImePrezime(String imePrezime) {
+        this.imePrezime = imePrezime;
+    }
+
+    @Override
+    public String toString() {
+        return "DokumentDTO{" +
+                "id=" + id +
+                ", naziv='" + naziv + '\'' +
+                ", tipDokumenta='" + tipDokumenta + '\'' +
+                ", downloadUri='" + downloadUri + '\'' +
+                ", brojIndeksa='" + brojIndeksa + '\'' +
+                '}';
     }
 }

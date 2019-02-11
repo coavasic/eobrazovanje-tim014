@@ -29,4 +29,6 @@ public class UplataService {
         uplataRepo.deleteById(id);
     }
 
+    public List<Uplata> getByStudentJmbg(Long jmbg){return uplataRepo.findAllByStudent_Jmbg(jmbg);}
+
 }

@@ -4,9 +4,9 @@ package eobrazovanje.tim014.model;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "korisnik")
-public abstract class Korisnik {
+public class Korisnik {
 
     @Id
     @Column

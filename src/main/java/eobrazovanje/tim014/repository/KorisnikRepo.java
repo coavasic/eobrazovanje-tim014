@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface KorisnikRepo  extends JpaRepository<Korisnik,Long> {
-
     @Query(value = "select * from korisnik",nativeQuery = true)
     public List<Korisnik> nadjiSve();
     public Korisnik findByKorisnickoIme(String username);

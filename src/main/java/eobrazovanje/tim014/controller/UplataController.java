@@ -1,14 +1,22 @@
 package eobrazovanje.tim014.controller;
 
 import eobrazovanje.tim014.dto.UplataDTO;
+import eobrazovanje.tim014.model.Korisnik;
 import eobrazovanje.tim014.model.Uplata;
+import eobrazovanje.tim014.repository.KorisnikRepo;
 import eobrazovanje.tim014.repository.StudentRepo;
 import eobrazovanje.tim014.service.UplataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.xml.ws.Response;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +30,9 @@ public class UplataController {
     @Autowired
     StudentRepo studentRepo;
 
+    @Autowired
+    KorisnikRepo korisnikRepo;
+
     @GetMapping("uplata/{id}")
     public ResponseEntity<UplataDTO> getById(@PathVariable Integer id){
         Uplata uplata = uplataService.getOne(id);
@@ -32,9 +43,20 @@ public class UplataController {
         return new ResponseEntity<UplataDTO>(new UplataDTO(uplata),HttpStatus.OK);
     }
 
-    @GetMapping("uplata/all")
+    @GetMapping("api/uplate")
     public ResponseEntity<List<UplataDTO>> getAll(){
-        List<Uplata> uplate = uplataService.getAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(authentication.getName());
+        if(korisnik.getTipkorisnika().equals("nastavnik")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Uplata> uplate = new ArrayList<>();
+        if(korisnik.getTipkorisnika().equals("student")){
+            uplate = uplataService.getByStudentJmbg(korisnik.getJmbg());
+        }
+        if(korisnik.getTipkorisnika().equals("administrator")){
+            uplate = uplataService.getAll();
+        }
         List<UplataDTO> uplataDTOS = uplate.stream().map(
                 uplata -> new UplataDTO(uplata)
         ).collect(Collectors.toList());
@@ -43,16 +65,50 @@ public class UplataController {
 
     }
 
-    @PostMapping("uplata")
-    public ResponseEntity<?> add(@RequestBody UplataDTO uplataDTO){
+    @PostMapping("api/uplata")
+    public ResponseEntity<?> add(@Valid @RequestBody UplataDTO uplataDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(authentication.getName());
+        if(!korisnik.getTipkorisnika().equals("administrator")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Uplata uplata = new Uplata();
-        uplata.setUplata(uplataDTO.getId());
-        uplata.setDatumUplate(uplataDTO.getDatumUplate());
+        uplata.setDatumUplate(new Date());
         uplata.setSvrhaUplate(uplataDTO.getSvrhaUplate());
         uplata.setIznos(uplata.getIznos());
         uplata.setStudent(studentRepo.findByBrojIndeksa(uplataDTO.getBrojIndeksa()));
+        System.out.println(uplata.toString());
 
-        return new ResponseEntity<UplataDTO>(uplataDTO,HttpStatus.OK);
+        return new ResponseEntity<UplataDTO>(new UplataDTO(uplataService.save(uplata)),HttpStatus.OK);
 
+    }
+
+    @PutMapping("api/uplata")
+    public ResponseEntity<?> edit(@RequestBody UplataDTO uplataDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(authentication.getName());
+        if(!korisnik.getTipkorisnika().equals("administrator")){
+            return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Uplata uplata = new Uplata();
+        uplata.setUplata(uplataDTO.getId());
+        uplata.setSvrhaUplate(uplataDTO.getSvrhaUplate());
+        uplata.setIznos(uplataDTO.getIznos());
+        uplata.setDatumUplate(uplataDTO.getDatumUplate());
+        uplata.setStudent(studentRepo.findByBrojIndeksa(uplataDTO.getBrojIndeksa()));
+
+        return new ResponseEntity<UplataDTO>(new UplataDTO(uplataService.save(uplata)),HttpStatus.OK);
+    }
+
+    @DeleteMapping("api/uplata/{id}")
+    public ResponseEntity<?> deleteUplata(@PathVariable Integer id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(authentication.getName());
+        if(!korisnik.getTipkorisnika().equals("administrator")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        uplataService.remove(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

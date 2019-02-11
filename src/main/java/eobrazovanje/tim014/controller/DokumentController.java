@@ -17,6 +17,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,16 +47,27 @@ public class DokumentController {
     @Autowired
     StudentRepo studentRepo;
 
-    @PostMapping(value = "uploadDoc",consumes = "multipart/form-data")
+    @PostMapping(value = "api/uploadDoc",consumes = "multipart/form-data")
     public UploadFileResponse uploadFile(@RequestParam(value="dokument") String dokumentString, @RequestPart("file") MultipartFile file) throws IOException {
-        Student student = studentRepo.findByKorisnickoIme("coavasic96");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Korisnik korisnik = korisnikRepo.findByKorisnickoIme(authentication.getName());
         ObjectMapper mapper = new ObjectMapper();
-        Dokument dokument = mapper.readValue(dokumentString,Dokument.class);
-        System.out.println(dokument.toString());
+        DokumentDTO dokumentDTO = mapper.readValue(dokumentString,DokumentDTO.class);
+        System.out.println(dokumentDTO.toString());
+        Student student = null;
+        if(korisnik.getTipkorisnika().equals("student")){
+            student = studentRepo.findByKorisnickoIme(korisnik.getKorisnickoIme());
+        }
+        if(korisnik.getTipkorisnika().equals("administrator")){
+            student = studentRepo.findByBrojIndeksa(dokumentDTO.getBrojIndeksa());
+        }
+        Dokument dokument = new Dokument();
         String fileName = fileStorageSevice.storeFiles(file,student.getKorisnickoIme());
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();
         dokument.setDownloadUri(fileName);
         dokument.setStudent(student);
+        dokument.setNaziv(dokumentDTO.getNaziv());
+        dokument.setTipDokumenta(dokumentDTO.getTipDokumenta());
         dokumentService.save(dokument);
 
 
@@ -76,7 +89,7 @@ public class DokumentController {
 
     }
 
-    @GetMapping("/dokument/all")
+    @GetMapping("api/dokument/all")
     public ResponseEntity<List<DokumentDTO>> getAll(){
         List<Dokument> dokuments = dokumentService.getAll();
         List<DokumentDTO> dokumentDTOS = dokuments.stream().filter(
@@ -86,7 +99,7 @@ public class DokumentController {
         return new ResponseEntity<List<DokumentDTO>>(dokumentDTOS,HttpStatus.OK);
     }
 
-    @GetMapping("/downloadFile/{username}/{fileName:.+}")
+    @GetMapping("api/downloadFile/{username}/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String username, HttpServletRequest request){
         Resource resource = fileStorageSevice.loadFileAsResource(fileName,username);
         System.out.println(resource.getFilename());
@@ -111,7 +124,7 @@ public class DokumentController {
                 .body(resource);
     }
 
-    @DeleteMapping("/dokument/{id}")
+    @DeleteMapping("api/dokument/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id){
         dokumentService.remove(id);
         return new ResponseEntity<>(HttpStatus.OK);
